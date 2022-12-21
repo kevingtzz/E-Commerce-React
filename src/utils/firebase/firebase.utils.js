@@ -6,6 +6,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  onAuthStateChanged,
 } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
@@ -18,14 +19,15 @@ const firebaseConfig = {
   appId: '1:58322010789:web:18bee30bf748302481034c',
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
+initializeApp(firebaseConfig);
+
+const auth = getAuth();
+console.log(auth);
 
 const googleProvider = new GoogleAuthProvider();
 googleProvider.setCustomParameters({
   prompt: 'select_account',
 });
-
-export const auth = getAuth();
 
 export const signInWithGooglePopup = () =>
   signInWithPopup(auth, googleProvider);
@@ -70,3 +72,6 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
 };
 
 export const signOutUser = async () => await signOut(auth);
+
+export const onAuthStateChangedListener = (callback) =>
+  onAuthStateChanged(auth, callback);

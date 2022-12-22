@@ -2,6 +2,7 @@ import { useContext } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 
 import { UserContext } from '../../constexts/user.context';
+import { CartContext } from '../../constexts/cart.context';
 
 import { ReactComponent as CrwnLogo } from '../../assets/crown.svg';
 import CartIcon from '../../components/cart-icon/cart-icon.component';
@@ -12,6 +13,7 @@ import './navigation.styles.scss';
 
 const Navigation = () => {
   const { currentUser } = useContext(UserContext);
+  const { isCartOpen } = useContext(CartContext);
 
   const signOutHandler = async () => {
     await signOutUser();
@@ -32,7 +34,7 @@ const Navigation = () => {
           }
           <CartIcon />
         </div>
-        <CartDropdown />
+        {isCartOpen && <CartDropdown />}
       </div>
       <Outlet />
     </>

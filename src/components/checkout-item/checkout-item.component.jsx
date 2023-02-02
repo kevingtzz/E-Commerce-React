@@ -22,10 +22,7 @@ const CheckoutItem = ({cartItem}) => {
 
   const clearItemHandler = () => dispath(clearItemFromCart(cartItems, cartItem));
   const addItemHandler = () => dispath(addItemToCart(cartItems, cartItem));
-  const removeItemHandler = () => {
-    console.log('dispathc remove')
-    // dispath(removeItemFromCart(cartItems, cartItem))
-  };
+  const removeItemHandler = () => dispath(removeItemFromCart(cartItems, cartItem));
 
   return (
     <CheckoutItemContainer>

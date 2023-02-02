@@ -16,7 +16,15 @@ import { rootReducer } from './root-reducer';
 //   console.log('next state: ', store.getState());
 // };
 
-const middlewares = [logger];
+const middlewares = [process.env.NODE_ENV !== 'production' && logger].filter(
+  Boolean
+);
+
+const composedEnhancer =
+  (process.env.NODE_ENV !== 'production' &&
+    window &&
+    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__) ||
+  compose;
 // const middlewares = [loggerMiddleware];
 
 const persistConfig = {
@@ -27,7 +35,7 @@ const persistConfig = {
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
-const composedEnhancers = compose(applyMiddleware(...middlewares));
+const composedEnhancers = composedEnhancer(applyMiddleware(...middlewares));
 
 export const store = createStore(
   persistedReducer,

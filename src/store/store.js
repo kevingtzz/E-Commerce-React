@@ -1,6 +1,7 @@
 import { compose, createStore, applyMiddleware } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 
 import { rootReducer } from './root-reducer';
@@ -16,9 +17,10 @@ import { rootReducer } from './root-reducer';
 //   console.log('next state: ', store.getState());
 // };
 
-const middlewares = [process.env.NODE_ENV !== 'production' && logger].filter(
-  Boolean
-);
+const middlewares = [
+  process.env.NODE_ENV !== 'production' && logger,
+  thunk,
+].filter(Boolean);
 
 const composedEnhancer =
   (process.env.NODE_ENV !== 'production' &&

@@ -1,12 +1,15 @@
 import { compose, createStore, applyMiddleware } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import thunk from 'redux-thunk';
+// import thunk from 'redux-thunk';
+import createSagaMiddleware from '@redux-saga/core';
 import logger from 'redux-logger';
+
+import { rootSaga } from './root-saga';
 
 import { rootReducer } from './root-reducer';
 
-// const loggerMiddleware = (store) => (next) => (action) => { // curry function
+// const loggerMiddleware = (store) => (next) => (action) => {
 //   if (!action.type) return next(action);
 //   console.log('type: ', action.type);
 //   console.log('payload: ', action.payload);
@@ -17,9 +20,21 @@ import { rootReducer } from './root-reducer';
 //   console.log('next state: ', store.getState());
 // };
 
+const persistConfig = {
+  key: 'root',
+  storage,
+  // blacklist: ['user'],
+  whitelist: ['cart'],
+};
+
+const sagaMiddleware = createSagaMiddleware();
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
+
 const middlewares = [
   process.env.NODE_ENV !== 'production' && logger,
-  thunk,
+  // thunk,
+  sagaMiddleware,
 ].filter(Boolean);
 
 const composedEnhancer =
@@ -29,15 +44,6 @@ const composedEnhancer =
   compose;
 // const middlewares = [loggerMiddleware];
 
-const persistConfig = {
-  key: 'root',
-  storage,
-  // blacklist: ['user'],
-  whitelist: ['cart'],
-};
-
-const persistedReducer = persistReducer(persistConfig, rootReducer);
-
 const composedEnhancers = composedEnhancer(applyMiddleware(...middlewares));
 
 export const store = createStore(
@@ -45,5 +51,7 @@ export const store = createStore(
   undefined,
   composedEnhancers
 );
+
+sagaMiddleware.run(rootSaga);
 
 export const persistor = persistStore(store);
